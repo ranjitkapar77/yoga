@@ -30,11 +30,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Schema::defaultStringLength(191);
-        // Paginator::useBootstrap();
-        // $setting = Setting::first();
-        // View::share('setting', $setting);
-        // View::share('globalExtra', Extra::get());
-        // View::share('category', CourseCategory::latest()->where('is_testpreparation', '0')->where('publish_status', '1')->where('delete_status', '0')->take('5')->get());
+        Schema::defaultStringLength(191);
+        Paginator::useBootstrap();
+        $setting = Setting::first();
+        View::share('setting', $setting);
+        View::share('globalExtra', Extra::get());
+        View::share('category', CourseCategory::latest()->where('is_testpreparation', '0')->where('publish_status', '1')->where('delete_status', '0')->take('5')->get());
     }
 }

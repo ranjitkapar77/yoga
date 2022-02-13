@@ -6,8 +6,8 @@
             <div class="categoris-container">
                 <div class="col-xl-12">
                     <div class="section-title text-center mb-55">
-                        <h2>{{ $globalExtra->firstWhere('key', 'test-preparation')->value }}</h2>
-                        <p>{!! $globalExtra->firstWhere('key', 'test-preparation')->description !!}</p>
+                        {{-- <h2>{{ $globalExtra->firstWhere('key', 'test-preparation')->value }}</h2> --}}
+                        {{-- <p>{!! $globalExtra->firstWhere('key', 'test-preparation')->description !!}</p> --}}
                     </div>
                 </div>
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-5">

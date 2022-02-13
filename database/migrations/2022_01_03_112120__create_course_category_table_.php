@@ -18,6 +18,7 @@ class CreateCourseCategoryTable extends Migration
             $table->text('title');
             $table->string('image');
             $table->text('description');
+            $table->enum('is_testpreparation', ['0', '1'])->default('0');
             $table->enum('publish_status', ['0', '1'])->default('1');
             $table->enum('delete_status', ['0', '1'])->default('0');
             $table->timestamps();
