@@ -266,6 +266,7 @@ class FrontController extends Controller
         {
             $album = Album::where('title_slug', $slug)->first();
             $service = Services::where('slug', $slug)->first();
+            $page = Content::where('content_url', $slug)->first();
             $product = Product::where('slug', $slug)->first();
             $blog = News::where('slug', $slug)->first();
 
@@ -293,6 +294,28 @@ class FrontController extends Controller
                 return view('frontend.gallery_details', compact('album', 'album_images','header_menus', 'footer_menus', 'meta'));
             }
             else if($service)
+            {
+
+                $setting = Setting::first();
+                $about_part = strip_tags($setting->aboutus);
+                $description = substr($about_part, 0 ,200). "..";
+                $header_menus = Menu::where('header_footer', 1)->orWhere('header_footer', 3)->orderBy('position', 'ASC')->get();
+                $footer_menus = Menu::where('header_footer', 2)->orWhere('header_footer', 3)->orderBy('position', 'ASC')->get();
+
+                $meta = [
+                    'meta_title' => $service->meta_title ? $service->meta_title : $service->title,
+                    'meta_keyword' => $service->meta_keywords ? $service->meta_keywords : $service->title,
+                    'meta_description' => $service->meta_description ? $service->meta_description : $description,
+                    'meta_keyphrase' => $service->meta_keywords ? $service->meta_keywords : $setting->company_name,
+                    'og_image' => Storage::disk('uploads')->url($service->og_image ? $service->og_image : $setting->company_favicon),
+                    'og_url' => route('pageSlug', $slug),
+                    'og_site_name' => $setting->company_name,
+                ];
+                $all_services = Services::latest()->get();
+
+                return view('frontend.details', compact('service', 'meta', 'all_services','header_menus', 'footer_menus', 'setting'));
+            }
+            else if($page)
             {
 
                 $setting = Setting::first();

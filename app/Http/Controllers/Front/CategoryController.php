@@ -22,6 +22,7 @@ class CategoryController extends Controller
         'pricingAndPlans' => 'pricing-and-plans',
         'services' => 'services',
         'blogs' => 'blogs',
+        'page' => 'page',
         'epaper' => 'epaper',
     ];
 
