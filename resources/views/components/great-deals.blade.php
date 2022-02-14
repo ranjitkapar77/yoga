@@ -3,9 +3,9 @@
         <div class="row justify-content-lg-center justify-content-start">
             <div class="col-xl-3 col-lg-8">
                 <div class="deal-box mb-30 text-center text-xl-start">
-                    <h2 class="mb-20"><b>{{ $globalExtra->firstWhere('key', 'services-1')->value }} </b>
-                        {{ $globalExtra->firstWhere('key', 'services-1')->value_1 }}</h2>
-                    <p>{!! $globalExtra->firstWhere('key', 'services-1')->description !!}</p>
+                    {{-- <h2 class="mb-20"><b>{{ $globalExtra->firstWhere('key', 'services-1')->value }} </b> --}}
+                        {{-- {{ $globalExtra->firstWhere('key', 'services-1')->value_1 }}</h2> --}}
+                    {{-- <p>{!! $globalExtra->firstWhere('key', 'services-1')->description !!}</p> --}}
                 </div>
             </div>
             <div class="col-xl-8">

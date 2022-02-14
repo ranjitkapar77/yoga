@@ -26,6 +26,7 @@ class CreateMenusTable extends Migration
             $table->string('image')->nullable();
             $table->string('page_title')->nullable();
             $table->string('content')->nullable();
+            $table->string('external_link')->nullable();
 
             $table->string('meta_title')->nullable();
             $table->string('meta_keywords')->nullable();

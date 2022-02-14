@@ -95,8 +95,8 @@
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="section-title text-center mb-50">
-                            <h2>{{ $extras->firstWhere('key', 'destination-h2-p')->value }}</h2>
-                            <p>{!! $extras->firstWhere('key', 'destination-h2-p')->description !!}</p>
+                            {{-- <h2>{{ $extras->firstWhere('key', 'destination-h2-p')->value }}</h2> --}}
+                            {{-- <p>{!! $extras->firstWhere('key', 'destination-h2-p')->description !!}</p> --}}
                         </div>
                     </div>
                 </div>

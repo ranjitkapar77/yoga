@@ -25,6 +25,7 @@ use App\Models\Testimonial;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\ChooseUs;
+use App\Models\Content;
 use App\Models\CourseCategory;
 use App\Models\Subscribers;
 use Illuminate\Http\Request;
@@ -52,7 +53,7 @@ class FrontController extends Controller
         $pricings = Pricing::latest()->with('planfeatures')->where('status', 1)->take(4)->get();
         $clients = Partners::latest()->get();
         $clientcount = count($clients);
-        $news = News::latest()->take(3)->get();
+        $news = Content::latest()->take(3)->get();
         $teams = Team::latest()->take(4)->get();
 
         $extras = Extra::get();

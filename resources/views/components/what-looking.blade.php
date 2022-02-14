@@ -8,7 +8,7 @@
                 <div class="col-lg-8">
                     <div class="section-title text-center mb-55">
 
-                        <h2>{{ $globalExtra->firstWhere('key', 'what-you-looking')->value }}</h2>
+                        {{-- <h2>{{ $globalExtra->firstWhere('key', 'what-you-looking')->value }}</h2> --}}
                     </div>
                 </div>
             </div>

@@ -5,9 +5,9 @@
             <div class="row">
                 <div class="col-xl-8 col-lg-9">
                     <div class="section-title text-center text-md-start mb-60">
-                        <h5 class="bottom-line mb-25">{{ $globalExtra->firstWhere('key', 'our-team')->value }}
-                        </h5>
-                        <h2 class="mb-25">{{ $globalExtra->firstWhere('key', 'our-team')->value_1 }}</h2>
+                        {{-- <h5 class="bottom-line mb-25">{{ $globalExtra->firstWhere('key', 'our-team')->value }}
+                        </h5> --}}
+                        {{-- <h2 class="mb-25">{{ $globalExtra->firstWhere('key', 'our-team')->value_1 }}</h2> --}}
                     </div>
                 </div>
             </div>

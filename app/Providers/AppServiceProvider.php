@@ -35,6 +35,6 @@ class AppServiceProvider extends ServiceProvider
         $setting = Setting::first();
         View::share('setting', $setting);
         View::share('globalExtra', Extra::get());
-        View::share('category', CourseCategory::latest()->where('is_testpreparation', '0')->where('publish_status', '1')->where('delete_status', '0')->take('5')->get());
+        View::share('category', CourseCategory::latest()->where('publish_status', '1')->where('delete_status', '0')->take('5')->get());
     }
 }
