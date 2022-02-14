@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use App\Models\Product;
+use App\Models\ProductCategory;
+use App\Models\ProductImage;
 use App\Models\ProductImages;
 use App\Models\Series;
 use Illuminate\Http\Request;
@@ -30,8 +32,9 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $brands = Brand::latest()->get();
-        return view('backend.products.create', compact('brands'));
+        // $brands = Brand::latest()->get();
+        $cats = ProductCategory::all();
+        return view('backend.products.create', compact('cats'));
     }
 
     /**
@@ -42,21 +45,18 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        $input = $request->all();
         $this->validate($request, [
-            'product_name' => 'required',
+            'title' => 'required',
             'price' => 'required',
-            'brand' => 'required',
-            'series' => 'required',
-            'size' => 'required',
-            'color' => 'required',
-            'guarantee_time' => 'required',
             'brief_description' => 'required',
-            'product_description' => 'required',
-            'product_images' => 'required',
-            'product_images.*' => 'mimes:jpeg,jpg,png',
-            'meta_title'  => '',
-            'meta_keywords'  => '',
-            'meta_description'  => '',
+            'main_description' => 'required',
+            'category_id' => 'required',
+            'multiple_files.*' => 'mimes:jpeg,jpg,png,svg',
+            'featured_photo' => 'mimes:jpeg,jpg,png,svg',
+            'meta_title'  => 'nullable',
+            'meta_keywords'  => 'nullable',
+            'meta_description'  => 'nullable',
             'og_image' => 'mimes:png,jpg,jpeg',
         ]);
 
@@ -65,43 +65,28 @@ class ProductController extends Controller
         {
             $image = $request->file('og_image');
             $og_image = $image->store('og_image', 'uploads');
+            $input['og_image'] = $og_image;
         }
-
-        $product = Product::create([
-            'name' => $request['product_name'],
-            'slug' => Str::slug($request->product_name),
-            'price' => $request['price'],
-            'guarantee_time' => $request['guarantee_time'],
-            'color' => $request['color'],
-            'size' => $request['size'],
-            'brand_id' => $request['brand'],
-            'series_id' => $request['series'],
-            'brief_description' => $request['brief_description'],
-            'main_description' => $request['product_description'],
-
-            'meta_title' => $request['meta_title'],
-            'meta_keywords' => $request['meta_keywords'],
-            'meta_description' => $request['meta_description'],
-            'og_image' => $og_image,
-        ]);
-
-        $imagename = '';
-        if($request->hasfile('product_images'))
+        if($request->hasfile('featured_photo'))
         {
-            $images = $request->file('product_images');
-            foreach($images as $image)
-            {
-                $imagename = $image->store('product_images', 'uploads');
-                $product_images = ProductImages::create([
-                    'product_id' => $product['id'],
-                    'location' => $imagename,
-                ]);
-                $product_images->save();
-            }
+            $image = $request->file('featured_photo');
+            $photo = $image->store('products', 'uploads');
+            $input['featured_img'] = $photo;
         }
+        $input['publish_status'] =$request->publish_status ?? 0;
+        $input['slug'] = str_replace(' ','-' ,(strtolower($request->title)));
 
-        $product->save();
+        $product = Product::create($input);
 
+        if($product && !empty($request->multiple_files))
+        foreach($request->multiple_files as $data){
+			$image = $data;
+			$image = $image->store('products', 'uploads');
+			ProductImage::create([
+				'product_id'=>$product->id,
+				'image'=>$image,
+			]);
+		}
         return redirect()->route('products.index')->with('success', 'Product is created successfully.');
     }
 
@@ -124,11 +109,9 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $product = Product::findorFail($id);
-        $brands = Brand::latest()->get();
-        $related_series = Series::latest()->where('brand_id', $product->brand_id)->get();
-        $product_images = ProductImages::where('product_id', $product->id)->get();
-        return view('backend.products.edit', compact('product', 'brands', 'related_series', 'product_images'));
+        $cats = ProductCategory::all();
+        $product = Product::findOrFail($id);
+        return view('backend.products.create', compact('product','cats'));
     }
 
     /**
@@ -140,80 +123,61 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // dd($request->all());
+        $this->validate($request, [
+            'title' => 'required',
+            'price' => 'required',
+            'brief_description' => 'required',
+            'main_description' => 'required',
+            'category_id' => 'required',
+            'multiple_files.*' => 'mimes:jpeg,jpg,png,svg',
+            'featured_photo' => 'mimes:jpeg,jpg,png,svg',
+            'meta_title'  => 'nullable',
+            'meta_keywords'  => 'nullable',
+            'meta_description'  => 'nullable',
+            'og_image' => 'mimes:png,jpg,jpeg',
+        ]);
+
+            
+    // $product = 
+    $input = $request->all();
+    $og_image = '';
+        if($request->hasfile('og_image'))
+        {
+            $image = $request->file('og_image');
+            $og_image = $image->store('og_image', 'uploads');
+            $input['og_image'] = $og_image;
+        }
+
+        if($request->hasfile('featured_photo'))
+        {
+            $image = $request->file('featured_photo');
+            $photo = $image->store('products', 'uploads');
+            $input['featured_img'] = $photo;
+        }
+        $input['publish_status'] =$request->publish_status ?? 0;
+        $input['slug'] = str_replace(' ','-' ,(strtolower($request->title)));
+
         $product = Product::findorFail($id);
+        $success =  $product->update($input);
 
-        if(isset($_POST['update']))
-        {
-            $this->validate($request, [
-                'product_name' => 'required',
-                'price' => 'required',
-                'brand' => 'required',
-                'series' => 'required',
-                'size' => 'required',
-                'color' => 'required',
-                'guarantee_time' => 'required',
-                'brief_description' => 'required',
-                'product_description' => 'required',
-                'meta_title'  => '',
-                'meta_keywords'  => '',
-                'meta_description'  => '',
-                'og_image' => 'mimes:png,jpg,jpeg',
-            ]);
-
-            $og_image = '';
-            if($request->hasfile('og_image'))
-            {
-                $image = $request->file('og_image');
-                $og_image = $image->store('og_image', 'uploads');
-            }
-            else
-            {
-                $og_image = $product->og_image;
-            }
-
-            $product->update([
-                'name' => $request['product_name'],
-                'slug' => Str::slug($request->product_name),
-                'price' => $request['price'],
-                'guarantee_time' => $request['guarantee_time'],
-                'color' => $request['color'],
-                'size' => $request['size'],
-                'brand_id' => $request['brand'],
-                'series_id' => $request['series'],
-                'brief_description' => $request['brief_description'],
-                'main_description' => $request['product_description'],
-
-                'meta_title' => $request['meta_title'],
-                'meta_keywords' => $request['meta_keywords'],
-                'meta_description' => $request['meta_description'],
-                'og_image' => $og_image,
-            ]);
-
-            return redirect()->route('products.index')->with('success', 'Product is updated successfully.');
-        }
-        elseif(isset($_POST['update_images']))
-        {
-            $this->validate($request, [
-                'product_images'=>'',
-                'product_images.*' => 'mimes:png,jpg,jpeg',
-            ]);
-
-            $imagename = '';
-            if($request->hasfile('product_images')) {
-
-                $images = $request->file('product_images');
-                foreach($images as $image){
-                    $imagename = $image->store('item_images', 'uploads');
-                    $product_images = ProductImages::create([
-                        'product_id' => $product->id,
-                        'location' => $imagename,
-                    ]);
-                    $product_images->save();
+        if($success && !empty($request->multiple_files))
+    {
+                foreach($product->images as $del){
+                    $del->delete();
                 }
+            foreach($request->multiple_files as $data){
+                $image = $data;
+                $image = $image->store('products', 'uploads');
+                ProductImage::create([
+                    'product_id'=>$id,
+                    'image'=>$image,
+                ]);
             }
-
-            return redirect()->back()->with('success', 'Images added successfully.');
         }
+
+            return redirect()->back()->with('success', 'Product updated successfully.');
+    
     }
 
     /**
@@ -224,14 +188,13 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
+        dd('dasda');
         $product = Product::findorFail($id);
-        $product_images = ProductImages::where('product_id', $product->id)->get();
-        dd($product_images);
+        $product_images = ProductImage::where('product_id', $id)->get();
         foreach ($product_images as $images) {
-            Storage::disk('uploads')->delete($images->location);
+            Storage::disk('uploads')->delete($images->image);
             $images->delete();
         }
-
         $product->delete();
 
         return redirect()->route('products.index')->with('success', 'Product is deleted Successfully');
@@ -239,13 +202,15 @@ class ProductController extends Controller
 
     public function deleteproductimage($id)
     {
-        $product_image = ProductImages::findorfail($id);
-        $images = ProductImages::where('product_id', $product_image->product_id)->get();
-        if(count($images) < 2)
-        {
-            return redirect()->back()->with('error', 'Only one image cannot be deleted.');
-        }
-        $product_image->delete();
+        dd($id);
+        $image = ProductImage::findorfail($id)->delete();
+
+        // $images = ProductImages::where('product_id', $product_image->product_id)->get();
+        // if(count($images) < 2)
+        // {
+        //     return redirect()->back()->with('error', 'Only one image cannot be deleted.');
+        // }
+        // $product_image->delete();
         return redirect()->back()->with('success', 'Image Removed Successfully');
     }
 }

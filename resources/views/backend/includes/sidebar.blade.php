@@ -119,7 +119,7 @@
             </ul>
         </li>
 
-          {{-- <li class="nav-item">
+          <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fab fa-product-hunt"></i>
               <p>
@@ -132,22 +132,22 @@
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-list"></i>
                         <p>
-                            Brand
+                            Category
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview" style="padding-left: 20px;">
                         <li class="nav-item">
-                            <a href="{{ route('brand.index') }}" class="nav-link">
+                            <a href="{{ route('product-category.index') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>View Brands</p>
+                                <p>View category</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ route('brand.create') }}" class="nav-link">
+                            <a href="{{ route('product-category.create') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Create new Brand</p>
+                                <p>Create new category</p>
                             </a>
                         </li>
                     </ul>
@@ -167,6 +167,15 @@
                     </a>
                 </li>
             </ul>
+          </li>
+
+          {{-- <li class="nav-item">
+            <a href="{{ route('partner.index') }}" class="nav-link">
+              <i class="nav-icon fas fa-handshake"></i>
+              <p>
+                Partners
+              </p>
+            </a>
           </li> --}}
 
           <li class="nav-item">

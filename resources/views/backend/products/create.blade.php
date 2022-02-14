@@ -5,6 +5,100 @@
             padding: 8px;
             max-width: 150px;
         }
+        input[type="file"] {
+    		display: block;
+    	}
+    	.imageThumb {
+    		max-height: 75px;
+    		/*border: 2px solid;*/
+    		padding: 1px;
+    		cursor: pointer;
+    	}
+    	.pip {
+    		display: inline-block;
+    		margin: 10px 10px 0 0;
+    	}
+    	.remove {
+    		display: block;
+    		background: #dc3545;
+    		border:#dc3545;
+    		color: white;
+    		text-align: center;
+    		cursor: pointer;
+    	}
+    	.remove:hover {
+    		background: white;
+    		color: black;
+    	}
+  
+    </style>
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+            .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+            .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+            .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+            input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+            input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+            input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+            /* Rounded sliders */
+            .slider.round {
+            border-radius: 34px;
+        }
+
+            .slider.round:before {
+            border-radius: 50%;
+        }
+        .hide{
+            display: none;
+
+        }
+        .show{
+            display: block;
+        }
     </style>
 @endpush
 @section('content')
@@ -55,17 +149,24 @@
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-body">
+                                    @isset($product)
+                                    <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        @method("PUT")
+                                    @else
                                     <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         @method("POST")
+                                    @endisset
+                                    
                                         <div class="row">
 
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="Product Name">Product Name :</label>
-                                                    <input type="text" class="form-control" name="product_name" placeholder="Enter Product Name">
+                                                    <input type="text" class="form-control" name="title" placeholder="Enter Product Name" value="{{ isset($product)? $product->title: old('title'); }}" >
                                                     <p class="text-danger">
-                                                        {{ $errors->first('product_name') }}
+                                                        {{ $errors->first('title') }}
                                                     </p>
                                                 </div>
                                             </div>
@@ -73,20 +174,20 @@
 
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="Brand">Related Brand :</label>
-                                                    <select name="brand" class="form-control brand">
-                                                        <option value="">--Select a Brand--</option>
-                                                        @foreach ($brands as $brand)
-                                                            <option value="{{ $brand->id }}">{{ $brand->brand_name }}</option>
+                                                    <label for="Brand">Select category :</label>
+                                                    <select name="category_id" class="form-control brand">
+                                                        <option value="">--Select a Category--</option>
+                                                        @foreach ($cats as $cat)
+                                                            <option value="{{ $cat->id }}" @if(isset($product)) @if($product->category_id==$cat->id) selected @endif @endif>{{ $cat->title }}</option>
                                                         @endforeach
                                                     </select>
                                                     <p class="text-danger">
-                                                        {{ $errors->first('product_name') }}
+                                                        {{ $errors->first('category_id') }}
                                                     </p>
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-6">
+                                            {{-- <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="series">Related Model<i class="text-danger">*</i> :</label>
                                                     <select name="series" class="form-control series" id="series_product">
@@ -96,9 +197,44 @@
                                                         {{ $errors->first('series') }}
                                                     </p>
                                                 </div>
-                                            </div>
+                                            </div> --}}
 
                                             <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="Active">Active: </label>
+                                                    <label class="switch pt-0">
+                                                        <input type="checkbox" name="publish_status"  value="1" @if(isset($product)) @if($product->publish_status==1) checked  @endif @endif>
+                                                        <span class="slider round"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="picture">Choose a featured photo:</label>
+                                                    <input type="file" class="form-control" name="featured_photo" id="picture" onchange="loadMemberPhoto(event)"> <br>
+                                                    <img id="member_photo_output" style="height: 150px;width: 150px;" src="@if(!isset($product)) {{ Storage::disk('uploads')->url('noimage.jpg') }} @else {{ Storage::disk('uploads')->url($product->featured_img) }} @endif">
+
+                                                    <p class="text-danger">
+                                                        {{ $errors->first('picture') }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        
+                                            {{-- <div class="col-md-6">
+                                                <label for="image_preview">Preview:</label> <br>
+                                            </div> --}}
+
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="Price (In Rs.)">Price (In Rs.) :</label>
+                                                    <input type="text" class="form-control" name="price" placeholder="Enter Price (In Rs.)" value="{{ isset($product)? $product->price: old('price'); }}">
+                                                    <p class="text-danger">
+                                                        {{ $errors->first('price') }}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {{-- <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="Color">Color :</label>
                                                     <input type="text" class="form-control" name="color" placeholder="Eg: Red, Green">
@@ -118,15 +254,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="Price (In Rs.)">Price (In Rs.) :</label>
-                                                    <input type="text" class="form-control" name="price" placeholder="Enter Price (In Rs.)">
-                                                    <p class="text-danger">
-                                                        {{ $errors->first('price') }}
-                                                    </p>
-                                                </div>
-                                            </div>
+                                            
 
                                             <div class="col-md-6">
                                                 <div class="form-group">
@@ -136,11 +264,11 @@
                                                         {{ $errors->first('guarantee_time') }}
                                                     </p>
                                                 </div>
-                                            </div>
+                                            </div> --}}
 
                                             <div class="col-md-12">
                                                 <label for="">Brief Description (Shows at the side of product):</label>
-                                                <textarea name="brief_description" class="form-control" cols="30" rows="5" placeholder="Brief Description.."></textarea>
+                                                <textarea name="brief_description" class="form-control" placeholder="Brief Description.."> {{ isset($product)? $product->brief_description: old('brief_description'); }} </textarea>
                                                 <p class="text-danger">
                                                     {{ $errors->first('brief_description') }}
                                                 </p>
@@ -148,13 +276,57 @@
 
                                             <div class="col-md-12">
                                                 <label for="">Product Description (Shows at description section):</label>
-                                                <textarea name="product_description" class="form-control" id="summernote"></textarea>
+                                                <textarea name="main_description" class="form-control" id="summernote">{{ isset($product)? $product->main_description: old('main_description'); }} </textarea>
                                                 <p class="text-danger">
-                                                    {{ $errors->first('product_description') }}
+                                                    {{ $errors->first('main_description') }}
                                                 </p>
                                             </div>
 
                                             <div class="col-md-6">
+                                                <div class="form-group">
+                                                        <label for="multiple_images">Select Multiple Images:</label>
+                                                        <br>
+                                                        <input type="button" Value="Select Multiple Images" class="multiple_images">
+                                                </div>
+                                            </div>
+                                            <div class="field" align="left">
+    
+                                                <input type="file" id="files" name="multiple_files[]" multiple style="display: none;" />
+                                            
+                                                @if(isset($product))
+                                            
+                                                @foreach($product->images as $images)
+                                                <span class="pip" id="remove{{$images->id}}">
+                                                    <img class="imageThumb" src="{{ Storage::disk('uploads')->url($images->image) }}">
+                                                    <br/><span class="remove updateremove" id="{{$images->id}}">Remove</span>
+                                                </span>
+                                                
+                                                
+                                                @endforeach
+                                                @endif
+
+                                                {{-- <div class="col-md-12 mt-5 mb-5">
+                                                    @if (isset($product))
+                                                        <div class="row">
+                                                            @foreach ($product->images as $image)
+                                                                <div class="col-md-3 wrapp">
+                                                                    <img src="{{ Storage::disk('uploads')->url($image->image) }}" alt="{{ $product->title }}" style="height: 200px;">
+                                                                    <form action="{{ route('deleteproductimage', $image->id) }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit" data-id="{{ $image->id }}" class="btn btn-danger py-0 px-1 absolutebtn" class="remove">x</button>
+                                                                    </form>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    @else
+                                                        <img src="{{ Storage::disk('uploads')->url('noimage.jpg') }}" alt="{{ $product->name }}" style="width:200px; max-height: 200px;">
+                                                    @endif
+                                                </div> --}}
+                                            </div>
+
+                                            {{-- <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="product_images">Select product images (Multiple images can be selected):</label>
                                                     <input type="file" class="form-control" name="product_images[]" id="images" multiple="multiple">
@@ -166,7 +338,7 @@
 
                                             <div class="col-md-12 user-image mb-3 text-center">
                                                 <div class="imgPreview"> </div>
-                                            </div>
+                                            </div> --}}
 
 
                                             <div class="col-md-12 text-center mt-4">
@@ -211,6 +383,8 @@
                                                     </p>
                                                 </div>
                                             </div>
+
+                                            
 
                                             <div class="col-md-6">
                                                 <label for="">Current Og:</label> <br>
@@ -262,6 +436,15 @@
         });
     </script>
     <script>
+
+var loadMemberPhoto = function(event) {
+            var output = document.getElementById('member_photo_output');
+            output.src = URL.createObjectURL(event.target.files[0]);
+            output.onload = function() {
+                URL.revokeObjectURL(output.src)
+            }
+        };
+        
         var loadOg = function(event) {
             var output = document.getElementById('current_og');
             output.src = URL.createObjectURL(event.target.files[0]);
@@ -273,34 +456,95 @@
             height: 300,
             placeholder: "Description.."
         });
+
+
+        $('.multiple_images').click(function(){
+    			$('#files').trigger('click'); 
+    		});
+
+
+
+    		const dt = new DataTransfer();
+    		$(document).ready(function() {
+    			if (window.File && window.FileList && window.FileReader) {
+    				$("#files").on("change", function(e) {
+    					var files = e.target.files,
+    					filesLength = files.length;
+    					for (var i = 0; i < filesLength; i++) {
+    						let fileName = this.files.item(i).name;
+    						var f = files[i]
+    						var fileReader = new FileReader();
+    						fileReader.onload = (function(e) {
+    							console.log(e);
+    							var file = e.target;
+    							$("<span class=\"pip\">" +
+    								"<img class=\"imageThumb\" src=\"" + e.target.result + "\" title=\"" + fileName + "\"/>" +
+    								"<br/><span class=\"remove\" d-name=\"" + fileName + "\" onclick='removeItem(this)' >Remove</span>" +
+    								"</span>").insertAfter("#files");          
+    						});
+    						fileReader.readAsDataURL(f);
+    					}
+
+    					for (let file of this.files) {
+    						dt.items.add(file);
+    					}
+
+    					this.files = dt.files;
+
+    		// $(".remove").click(function(){
+
+      //         });
+             });
+    			} else {
+    				alert("Your browser doesn't support to File API")
+    			}
+    		});
+
+    		function removeItem(event) {
+    			console.log(event);
+    			let name = $(event).attr('d-name');
+    			
+    			$(event).parent(".pip").remove();
+    			for(let i = 0; i < dt.items.length; i++){
+    				console.log("ius ",dt.items[i].getAsFile().name);
+    			// Correspondance du fichier et du nom
+    			if(name === dt.items[i].getAsFile().name){
+    				// Suppression du fichier dans l'objet DataTransfer
+    				dt.items.remove(i);
+    				continue;
+    			}
+    		}
+    		document.getElementById('files').files = dt.files;
+
+    	}
     </script>
 
     <script>
-        $(function() {
-            $('.brand').change(function() {
-                var brand_id = $(this).children("option:selected").val();
+        // $(function() {
+        //     $('.brand').change(function() {
+        //         var brand_id = $(this).children("option:selected").val();
 
-                function fillSeries(series) {
-                    document.getElementById("series_product").innerHTML =
-                    series.reduce((tmp, x) => `${tmp}<option value='${x.id}'>${x.model_name}</option>`, '');
-                }
+        //         function fillSeries(series) {
+        //             document.getElementById("series_product").innerHTML =
+        //             series.reduce((tmp, x) => `${tmp}<option value='${x.id}'>${x.model_name}</option>`, '');
+        //         }
 
-                function fetchBrands(brand_id) {
-                    var uri = "{{ route('getSeries', ':no') }}";
-                    uri = uri.replace(':no', brand_id);
-                    $.ajax({
-                        url: uri,
-                        type: 'get',
-                        dataType: 'json',
-                        success: function(response) {
-                            var series = response;
-                            console.log(series);
-                            fillSeries(series);
-                        }
-                    });
-                }
-                fetchBrands(brand_id);
-            })
-        });
+        //         function fetchBrands(brand_id) {
+        //             var uri = "{{ route('getSeries', ':no') }}";
+        //             uri = uri.replace(':no', brand_id);
+        //             $.ajax({
+        //                 url: uri,
+        //                 type: 'get',
+        //                 dataType: 'json',
+        //                 success: function(response) {
+        //                     var series = response;
+        //                     console.log(series);
+        //                     fillSeries(series);
+        //                 }
+        //             });
+        //         }
+        //         fetchBrands(brand_id);
+        //     })
+        // });
     </script>
 @endpush

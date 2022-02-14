@@ -17,6 +17,7 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PartnersController;
 use App\Http\Controllers\PlanTypeController;
 use App\Http\Controllers\PricingController;
+use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SeriesController;
 use App\Http\Controllers\ServicesController;
@@ -69,6 +70,9 @@ Route::get('/dashboard', function () {
 })->name('dashboard')->middleware(['auth:sanctum', 'verified']);
 
 Route::group(['prefix' => 'admin'], function () {
+
+
+    Route::resource('product-category',ProductCategoryController::class)->middleware('auth');
     Route::resource('setting', SettingController::class)->middleware(['auth:sanctum', 'verified']);
     Route::get('socialMedia', [SettingController::class, 'socialMedia'])->name('socialMedia')->middleware(['auth:sanctum', 'verified']);
     Route::get('aboutUs', [SettingController::class, 'aboutUs'])->name('aboutUs')->middleware(['auth:sanctum', 'verified']);

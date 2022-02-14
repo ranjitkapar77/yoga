@@ -4,19 +4,24 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductImagesTable extends Migration
+class CreateProductCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
+     * soft
      */
     public function up()
     {
-        Schema::create('product_images', function (Blueprint $table) {
+        
+        Schema::create('product_categories', function (Blueprint $table) {
             $table->id();
-            $table->integer('product_id');
-            $table->string('location');
+            $table->string('title');
+            $table->string('slug')->nullabe();
+            $table->text('description')->nullabe();
+            $table->boolean('publish_status')->nullabe();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -28,6 +33,6 @@ class CreateProductImagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_images');
+        Schema::dropIfExists('product_categories');
     }
 }

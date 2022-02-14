@@ -10,12 +10,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Products <a href="{{ route('products.create') }}" class="btn btn-primary">Create an Product</a></h1>
+                    <h1 class="m-0">All Catgories <a href="{{ route('product-category.create') }}" class="btn btn-primary">Add New Category</a></h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                    <li class="breadcrumb-item active">Products</li>
+                    <li class="breadcrumb-item active">product-category</li>
                     </ol>
                 </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -53,17 +53,15 @@
                                     <table class="table table-bordered text-center">
                                         <thead class="thead-light">
                                             <tr>
-                                                <th>Featured Image</th>
-                                                <th>Name</th>
-                                                <th>Category</th>
-                                                {{-- <th>Model</th> --}}
-                                                <th>Price</th>
+                                                <th>Category Title</th>
+                                                {{-- <th>Description</th> --}}
+                                                <th>Status</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
 
                                         <tbody>
-                                            @if (count($products) == 0)
+                                            @if (count($cats) == 0)
                                                 <tr>
                                                     <td colspan="5">
                                                         <p class="text-center">
@@ -72,29 +70,26 @@
                                                     </td>
                                                 </tr>
                                             @else
-                                                @foreach ($products as $product)
+                                                @foreach ($cats as $cat)
                                                     <tr>
-                                                            <td>
-                                                                <img src="{{ Storage::disk('uploads')->url($product->featured_img) }}" alt="{{ $product->title }}" style="height: 90px; width: 150px;">
-                                                            </td>
-                                                        <td>
-                                                            {{ $product->title }}
-                                                        </td>
-                                                        <td>
-                                                            {{ $product->category->title }}
-                                                        </td>
                                                         {{-- <td>
-                                                            {{ $product->series->model_name }}
+                                                            <img src="{{ Storage::disk('uploads')->url($cat->brand_image) }}" alt="{{ $cat->brand_name }}" style="height: 90px; width: 150px;">
                                                         </td> --}}
                                                         <td>
-                                                            Rs. {{ $product->price }}
-                                                        </td>
+                                                            {{$cat->title}}
 
+                                                        </td>
+                                                        {{-- <td>
+                                                            {{$cat->description}}
+                                                        </td> --}}
                                                         <td>
-                                                            <a href="{{ route('products.edit', $product->id) }}" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
-                                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deletionservice{{ $product->id }}" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>
+                                                            @if($cat->publish_status==1) <span class="badge badge-info">Active</span> @else <span class="badge badge-danger">Inactive</span> @endif
+                                                        </td>
+                                                        <td>
+                                                            <a href="{{ route('product-category.edit', $cat->id) }}" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deletionservice{{ $cat->id }}" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>
                                                             <!-- Modal -->
-                                                                <div class="modal fade text-left" id="deletionservice{{ $product->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                <div class="modal fade text-left" id="deletionservice{{ $cat->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                                     <div class="modal-dialog" role="document">
                                                                         <div class="modal-content">
                                                                             <div class="modal-header">
@@ -104,7 +99,7 @@
                                                                             </button>
                                                                             </div>
                                                                             <div class="modal-body text-center">
-                                                                                <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:inline-block;">
+                                                                                <form action="{{ route('product-category.destroy', $cat->id) }}" method="POST" style="display:inline-block;">
                                                                                     @csrf
                                                                                     @method("POST")
                                                                                     <label for="reason">Are you sure you want to delete??</label><br>
@@ -125,14 +120,14 @@
                                         <div class="row">
                                             <div class="col-md-8">
                                                 <p class="text-sm">
-                                                    Showing <strong>{{ $products->firstItem() }}</strong> to
-                                                    <strong>{{ $products->lastItem() }} </strong> of <strong>
-                                                        {{ $products->total() }}</strong>
+                                                    Showing <strong>{{ $cats->firstItem() }}</strong> to
+                                                    <strong>{{ $cats->lastItem() }} </strong> of <strong>
+                                                        {{ $cats->total() }}</strong>
                                                     entries
                                                 </p>
                                             </div>
                                             <div class="col-md-4">
-                                                <span class="pagination-sm m-0 float-right">{{ $products->links() }}</span>
+                                                <span class="pagination-sm m-0 float-right">{{ $cats->links() }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -146,6 +141,7 @@
         </div>
     <!-- /.content-wrapper -->
 @endsection
+
 @push('scripts')
 
 @endpush
