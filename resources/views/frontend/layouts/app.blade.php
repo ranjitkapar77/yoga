@@ -1,72 +1,42 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>{{ $setting->company_name }}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        @yield('meta')
+        <link rel="manifest" href="site.webmanifest">
+        <link rel="shortcut icon" type="image/x-icon"
+            href="{{ Storage::disk('uploads')->url($setting->company_favicon) }}" />
+        <link href="{{ asset('frontend/css/bootstrap.min.css ') }}" rel="stylesheet">
+        <link href="{{ asset('frontend/plugins/wowjs/animate.css ') }}" rel="stylesheet">
+        <link href="{{ asset('frontend/plugins/line-awesome/css/line-awesome.min.css ') }}" rel="stylesheet">
+        <link href="{{ asset('frontend/plugins/owl-carousel/owl.carousel.min.css ') }}" rel="stylesheet">
+        <link href="{{ asset('frontend/plugins/fullcalendar/main.min.css ') }}" rel="stylesheet">
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>{{ $setting->company_name }}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    @yield('meta')
-    <link rel="manifest" href="site.webmanifest">
-    <link rel="shortcut icon" type="image/x-icon"
-        href="{{ Storage::disk('uploads')->url($setting->company_favicon) }}" />
-    {{-- @stack('styles') --}}
-    <!-- Place favicon.ico in the root directory -->
+        <link href="{{ asset('frontend/css/style.css ') }}" rel="stylesheet">
+        @stack('styles')
+    </head>
+    <body>
 
-    <!-- CSS here -->
-    <link rel="stylesheet" href="{{ asset('frontend/assets/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('frontend/assets/css/owl.carousel.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('frontend/assets/css/animate.css') }}">
-    <link rel="stylesheet" href="{{ asset('frontend/assets/css/magnific-popup.css') }}">
-    <link rel="stylesheet" href="{{ asset('frontend/assets/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('frontend/assets/css/flaticon.css') }}">
-    <link rel="stylesheet" href="{{ asset('frontend/assets/css/font.css') }}">
-    <link rel="stylesheet" href="{{ asset('frontend/assets/css/metisMenu.css') }}">
-    <link rel="stylesheet" href="{{ asset('frontend/assets/css/nice-select.css') }}">
-    <link rel="stylesheet" href="{{ asset('frontend/assets/css/slick.css') }}">
-    <link rel="stylesheet" href="{{ asset('frontend/assets/css/spacing.css') }}">
-    <link rel="stylesheet" href="{{ asset('frontend/assets/css/main.css') }}">
-    @stack('styles')
-</head>
+        <x-header-component />
 
-<body>
+        @yield('content')
 
-    <x-header-component />
+        <x-footer-component />
 
-    @yield('content')
+        <!-- JS here -->
 
-    <x-footer-component />
+        <script src="{{ asset('frontend/js/jquery-3.6.0.min.js ') }}"></script>
+        <script src="{{ asset('frontend/js/bootstrap.min.js ') }}"></script>
+        <script src="{{ asset('frontend/plugins/wowjs/wow.min.js ') }}"></script>
+        <script src="{{ asset('frontend/plugins/owl-carousel/owl.carousel.min.js ') }}"></script>
+        <script src="{{ asset('frontend/plugins/fullcalendar/main.min.js ') }}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js"></script>
 
-    <!-- JS here -->
-
-    <script src="{{ asset('frontend/assets/js/vendor/modernizr-3.5.0.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/vendor/jquery-2.2.4.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/popper.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/owl.carousel.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/isotope.pkgd.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/slick.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/metisMenu.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/jquery.nice-select.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/ajax-form.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/wow.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/jquery.counterup.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/waypoints.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/jquery.scrollUp.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/imagesloaded.pkgd.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/jquery.magnific-popup.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/jquery.easypiechart.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/plugins.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/main.js') }}"></script>
-
-    <script>
-        $(function() {
-            $(".alert").delay(4000).slideUp(200, function() {
-                $(this).alert('close');
-            });
-        })
-    </script>
-    @stack('scripts')
-</body>
+        <script src="{{ asset('frontend/js/script.js ') }}"></script>
+        @stack('scripts')
+    </body>
 
 </html>

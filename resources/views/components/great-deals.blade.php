@@ -1,3 +1,36 @@
+<section id="service_cover" class="o_buttom_padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5 m-auto text-center">
+                <div class="site_title wow bounceInDown">
+                    <h3><span>Our Services</span></h3>
+                    <p><i>Take a deep breath, relax and let us take care of you. Join us for a complete mindful
+                            experience.</i></p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="owl-carousel" id="services_os_slider">
+                    @foreach ($services as $service)
+                    <div>
+                        <div class="service_thumbnail wow bounceInUp">
+                            <div class="service_images">
+                                <img src="{{asset('frontend/images/a1.jpg') }}" alt="">
+                            </div>
+                            <div class="service_caption">
+                                <p>Yoga</p>
+                                <a href="#" class="btn btn-secondary">Details<i class="las la-angle-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
 <section class="great-deal-area pt-150 pt-md-100 pt-xs-100 pb-xs-40">
     <div class="container">
         <div class="row justify-content-lg-center justify-content-start">
