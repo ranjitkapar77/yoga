@@ -368,6 +368,30 @@
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-list"></i>
               <p>
+                Food Menu
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('food-menu.index') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Food Menu List</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('food-menu.create') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Create Food Menu</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-list"></i>
+              <p>
                 Menu Management
                 <i class="fas fa-angle-left right"></i>
               </p>

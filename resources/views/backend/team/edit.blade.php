@@ -140,6 +140,26 @@
                                                     </p>
                                                 </div>
                                             </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="">Team Type: </label>
+                                                    <select name="team_type_id" class="form-control">
+                                                        {{-- <option disabled selected>--Select a team type--</option> --}}
+                                                        @foreach ($teamType as $cat)
+                                                        <option value="{{ $cat->id }}" @if(isset($team)) @if($team->food_type==$cat->id) selected @endif  @endif>{{ $cat->name }}</option>
+                                                        @endforeach
+                                                        
+                                                    </select>
+                                                    <p class="text-danger">
+                                                        {{ $errors->first('team_type_id') }}
+                                                    </p>
+                                                    <button  class="btn btn-warning"  type="button" id="formButton">Create Team type</button>
+                                                    <label id="form1" style="display: none;">
+                                                        <input type="text" id="name" placeholder="Team type">
+                                                        <button class="btn btn-success" type="button" id="butsave">Submit</button>
+                                                    </label>
+                                                </div>
+                                            </div>
                                             <div class="col-md-9">
                                                 <div class="form-group">
                                                     <label for="team_image">Select an image:</label>
@@ -282,4 +302,37 @@
             placeholder: "Services content.."
         });
     </script>
+    <script>
+        $("#formButton").click(function(){
+        $("#form1").toggle();
+    });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#butsave').on('click', function() {
+                $("#butsave").attr("disabled", "disabled");
+                var name = $('#name').val();
+                if(name!=""){
+                    $.ajax({
+                        url: "{{route('teamType.create')}}",
+                        type: "POST",
+                        data: {
+                            _token:"{{ csrf_token()}}",
+                            name: name,
+                        },
+                        cache: false,
+                        success: function() {
+                            $('#alertMessage').html('<p>success message</p>');
+                            setTimeout(function(){
+                            location.reload();
+                            }, 800);
+                        }
+                    });
+                }
+                else{
+                    alert('Please fill all the field !');
+                }
+            });
+        });
+        </script>
 @endpush

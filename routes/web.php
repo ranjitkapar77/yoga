@@ -9,6 +9,8 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseLevelController;
 use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\ExtraController;
+use App\Http\Controllers\FoodMenuController;
+use App\Http\Controllers\FoodMenuTypeController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\LearnController;
 use App\Http\Controllers\MailMessagesController;
@@ -82,6 +84,11 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('products', ProductController::class)->middleware(['auth:sanctum', 'verified']);
     Route::resource('slider', SliderController::class)->middleware(['auth:sanctum', 'verified']);
     Route::resource('menu', MenuController::class)->middleware(['auth:sanctum', 'verified']);
+    Route::resource('food-menu', FoodMenuController ::class)->middleware(['auth:sanctum', 'verified']);
+    Route::post('food-menu-type', [FoodMenuController::class,'foodMenuType'])->middleware('auth')->name('foodMenuType.create');
+    Route::post('team-type', [TeamController::class,'teamType'])->middleware('auth')->name('teamType.create');
+
+
     Route::post('saveMenuCategory', [MenuController::class, 'create_menuCategory'])->name('saveMenuCategory')->middleware(['auth:sanctum', 'verified']);
     Route::resource('partner', PartnersController::class)->middleware(['auth:sanctum', 'verified']);
     Route::resource('news', NewsController::class)->middleware(['auth:sanctum', 'verified']);

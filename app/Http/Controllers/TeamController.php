@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Team;
+use App\Models\TeamType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -32,21 +33,21 @@ class TeamController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function teamsearch(Request $request){
-        $search = $request['search'];
+    // public function teamsearch(Request $request){
+    //     $search = $request['search'];
 
-        $teams = Team::query()
-                        ->where('name', 'LIKE', "%$search%")
-                        ->orWhere('post', 'LIKE', "%$search%")
-                        ->latest()
-                        ->paginate(10);
-        return view('backend.team.searchindex', compact('teams'));
-    }
+    //     $teams = Team::query()
+    //                     ->where('name', 'LIKE', "%$search%")
+    //                     ->orWhere('post', 'LIKE', "%$search%")
+    //                     ->latest()
+    //                     ->paginate(10);
+    //     return view('backend.team.searchindex', compact('teams'));
+    // }
 
     public function create()
     {
-        //
-        return view('backend.team.create');
+        $teamType = TeamType::latest()->get();
+        return view('backend.team.create',compact('teamType'));
     }
 
     /**
@@ -57,6 +58,7 @@ class TeamController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $member_count = Team::orderBy('in_order', 'desc')->first();
         if($member_count)
         {
@@ -69,8 +71,9 @@ class TeamController extends Controller
         $this->validate($request, [
             'name'=>'required',
             'post'=>'required',
-            'team_image' => 'required|mimes:png,jpg,jpeg',
-            'active' => ''
+            'team_image' => 'nullable|mimes:png,jpg,jpeg,svg',
+            'active' => '',
+            'team_type_id'=>'required|integer'    
         ]);
 
         $team_image = '';
@@ -90,6 +93,7 @@ class TeamController extends Controller
             'name' => $request['name'],
             'slug' => Str::slug($request['name']),
             'post' => $request['post'],
+            'team_type_id'=>$request->team_type_id,
             'image' => $team_image,
             'address' => $request['address'],
             'phone' => $request['phone'],
@@ -127,9 +131,9 @@ class TeamController extends Controller
      */
     public function edit($id)
     {
-        //
+        $teamType = TeamType::latest()->get();
         $team = Team::findorfail($id);
-        return view('backend.team.edit', compact('team'));
+        return view('backend.team.edit', compact('team','teamType'));
     }
 
     /**
@@ -146,8 +150,10 @@ class TeamController extends Controller
         $this->validate($request, [
             'name'=>'required',
             'post'=>'required',
-            'team_image' => 'mimes:png,jpg,jpeg',
-            'active' => ''
+            'team_image' => 'nullable|mimes:png,jpg,jpeg',
+            'active' => '',
+            'team_type_id'=>'required|integer'    
+
         ]);
 
         $team_image = '';
@@ -170,6 +176,7 @@ class TeamController extends Controller
             'slug' => Str::slug($request['name']),
             'post' => $request['post'],
             'image' => $team_image,
+            'team_type_id'=>$request->team_type_id,    
             'address' => $request['address'],
             'phone' => $request['phone'],
             'email' => $request['email'],
@@ -217,5 +224,14 @@ class TeamController extends Controller
         }
 
         return true;
+    }
+
+    public function teamType(Request $request)
+    {
+        $teamType = TeamType::create([
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
+        ]);
+        $teamType->save();
     }
 }

@@ -188,7 +188,6 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        dd('dasda');
         $product = Product::findorFail($id);
         $product_images = ProductImage::where('product_id', $id)->get();
         foreach ($product_images as $images) {

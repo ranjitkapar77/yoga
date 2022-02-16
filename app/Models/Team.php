@@ -9,5 +9,5 @@ class Team extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'post', 'image', 'address', 'phone', 'email', 'website', 'content', 'facebook', 'linkedin', 'youtube', 'twitter', 'status', 'in_order'];
+    protected $fillable = ['team_type_id','name', 'slug', 'post', 'image', 'address', 'phone', 'email', 'website', 'content', 'facebook', 'linkedin', 'youtube', 'twitter', 'status', 'in_order'];
 }
